@@ -1,9 +1,23 @@
 import { DateTime } from "luxon";
 
-export default function(eleventyConfig) {
+function formatSaudiDate(dateObj, format) {
+	const options = format || { day: '2-digit', month: 'long', year: 'numeric' };
+	const formatter = new Intl.DateTimeFormat('ar-SA', { ...options, timeZone: 'Asia/Riyadh' });
+	const arabicFormattedDate = formatter.format(dateObj);
+
+	// Replace Indian numerals (٠١٢٣٤٥٦٧٨٩) with Arabic numerals (0123456789)
+	const westernFormattedDate = arabicFormattedDate.replace(
+		/[\u0660-\u0669]/g,
+		digit => String.fromCharCode(digit.charCodeAt(0) - 0x0660 + 48)
+	);
+
+	return westernFormattedDate;
+}
+
+export default function (eleventyConfig) {
 	eleventyConfig.addFilter("readableDate", (dateObj, format, zone) => {
 		// Formatting tokens for Luxon: https://moment.github.io/luxon/#/formatting?id=table-of-tokens
-		return DateTime.fromJSDate(dateObj, { zone: zone || "utc" }).toFormat(format || "dd LLLL yyyy");
+		return formatSaudiDate(dateObj);
 	});
 
 	eleventyConfig.addFilter("htmlDateString", (dateObj) => {
@@ -13,10 +27,10 @@ export default function(eleventyConfig) {
 
 	// Get the first `n` elements of a collection.
 	eleventyConfig.addFilter("head", (array, n) => {
-		if(!Array.isArray(array) || array.length === 0) {
+		if (!Array.isArray(array) || array.length === 0) {
 			return [];
 		}
-		if( n < 0 ) {
+		if (n < 0) {
 			return array.slice(n);
 		}
 

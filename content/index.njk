@@ -1,6 +1,6 @@
 ---js
 const eleventyNavigation = {
-	key: "Home",
+	key: "الرئيسية",
 	order: 1
 };
 
@@ -8,7 +8,7 @@ const numberOfLatestPostsToShow = 3;
 ---
 {% set postsCount = collections.posts | length %}
 {% set latestPostsCount = postsCount | min(numberOfLatestPostsToShow) %}
-<h1>Latest {{ latestPostsCount }} Post{% if latestPostsCount != 1 %}s{% endif %}</h1>
+<h1>آخر {% if latestPostsCount == 1 %}موضوع{% elif latestPostsCount == 2 %}موضوعين{% else %} {{ latestPostsCount }} الموضوعات{% endif %}</h1>
 
 {% set postslist = collections.posts | head(-1 * numberOfLatestPostsToShow) %}
 {% set postslistCounter = postsCount %}
@@ -16,7 +16,7 @@ const numberOfLatestPostsToShow = 3;
 
 {% set morePosts = postsCount - numberOfLatestPostsToShow %}
 {% if morePosts > 0 %}
-<p>{{ morePosts }} more post{% if morePosts != 1 %}s{% endif %} can be found in <a href="blog.njk">the archive</a>.</p>
+<p>{% if morePosts == 1 %}تبقى موضوع آخر تجده {% elif morePosts == 2 %}تبقى موضوعين آخرين تجدهما {%else%}تبقى {{ morePosts }} موضوعات أخرى تجدها {% endif %} في <a href="blog.njk">الإرشيف</a>.</p>
 {% endif %}
 
 {# List every content page in the project #}
